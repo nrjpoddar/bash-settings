@@ -54,4 +54,13 @@ function cdc() {
   docker ps -a | egrep 'Exited.*(days|weeks|months)' | awk '{print $1}' | xargs docker rm -v
 }
 
-PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w $(__git_ps1 "(%s)")\$ '
+_direnv_prompt () {
+  if [[ "$PROMPT_NAME" != "" ]]; then
+    printf "(%s)" "${PROMPT_NAME}"
+  elif [[ "$DIRENV_DIR" =~ -/.* ]]; then
+    printf "(%s)" "$(basename ${DIRENV_DIR#-})"
+  fi
+}
+
+PS1='${debian_chroot:+($debian_chroot)}\033[01;32m\]\u@\h\033[00m\]:[\033[01;34m\]\w\[\033[00m\]] $(__git_ps1 "(%s)")\$ '
+PS1='$(_direnv_prompt)'"$PS1"
