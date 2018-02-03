@@ -1,6 +1,8 @@
 alias lsa="ls -alrt"
+alias vim="/usr/local/bin/vim"
 alias vi="vim -O"
 alias grep="grep --exclude-dir=\.git --color=always"
+alias jq="jq -C"
 
 if [ -f /usr/lib/git-core/git-sh-prompt ]; then
   source /usr/lib/git-core/git-sh-prompt
@@ -8,6 +10,9 @@ fi
 
 function gl() {
   git log --format=fuller --decorate --color --no-merges
+}
+function glm() {
+  git log --format=fuller --decorate --color
 }
 function gpd() {
   git push --dry-run origin $1
@@ -54,6 +59,14 @@ function cdc() {
   docker ps -a | egrep 'Exited.*(days|weeks|months)' | awk '{print $1}' | xargs docker rm -v
 }
 
+function kube-svc-port() {
+  kubectl get svc -n $1 -l $2 -o jsonpath='{.items[0].spec.ports[0].port}'
+}
+
+function kube-port-forward() {
+  kubectl -n $1 port-forward $(kubectl -n $1 get pod -l $2 -o jsonpath='{.items[0].metadata.name}') $3:$3 2>&1 > /dev/null &
+}
+
 _direnv_prompt () {
   if [[ "$PROMPT_NAME" != "" ]]; then
     printf "(%s)" "${PROMPT_NAME}"
@@ -62,5 +75,5 @@ _direnv_prompt () {
   fi
 }
 
-PS1='${debian_chroot:+($debian_chroot)}\033[01;32m\]\u@\h\033[00m\]:[\033[01;34m\]\w\[\033[00m\]] $(__git_ps1 "(%s)")\$ '
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 "(%s)")\$ '
 PS1='$(_direnv_prompt)'"$PS1"
