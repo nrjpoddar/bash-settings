@@ -59,6 +59,10 @@ function cdc() {
   docker ps -a | egrep 'Exited.*(days|weeks|months)' | awk '{print $1}' | xargs docker rm -v
 }
 
+function doocker-host-port() {
+  docker inspect $1 --format='{{(index (index .NetworkSettings.Ports "$2/tcp") 0).HostPort}}'
+}
+
 function kube-svc-port() {
   kubectl get svc -n $1 -l $2 -o jsonpath='{.items[0].spec.ports[0].port}'
 }
@@ -77,3 +81,19 @@ _direnv_prompt () {
 
 PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(__git_ps1 "(%s)")\$ '
 PS1='$(_direnv_prompt)'"$PS1"
+
+# Generate cscope database
+function cscope_build() {
+  # Generate a list of all source files starting from the current directory
+  # The -o means logical or
+  find . -name "*.c" -o -name "*.cc" -o -name "*.cpp" -o -name "*.h" -o -name "*.hh" -o -name "*.hpp" > cscope.files
+  # -q build fast but larger database
+  # -R search symbols recursively
+  # -b build the database only, don't fire cscope
+  # -i file that contains list of file paths to be processed
+  # This will generate a few cscope.* files
+  cscope -q -R -b -i cscope.files
+  # Temporary files, remove them
+  # rm -f cscope.files cscope.in.out cscope.po.out
+  echo "The cscope database is generated"
+}
