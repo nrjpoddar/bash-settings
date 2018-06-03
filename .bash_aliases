@@ -45,6 +45,9 @@ function gsa() {
 function gr() {
   grep -r -n "$1" .
 }
+function ggr() {
+  git grep -n "$1" .
+}
 function gcr() {
   git commit --reset-author -c $1
 }
@@ -69,6 +72,18 @@ function kube-svc-port() {
 
 function kube-port-forward() {
   kubectl -n $1 port-forward $(kubectl -n $1 get pod -l $2 -o jsonpath='{.items[0].metadata.name}') $3:$3 2>&1 > /dev/null &
+}
+
+function kube-pod-name() {
+  kubectl -n $1 get pods -o custom-columns=:metadata.name --no-headers=true
+}
+
+function ku() {
+  kops update cluster --create-kube-config=false
+}
+
+function kuy() {
+  kops update cluster --create-kube-config=false --yes
 }
 
 _direnv_prompt () {
@@ -96,4 +111,8 @@ function cscope_build() {
   # Temporary files, remove them
   # rm -f cscope.files cscope.in.out cscope.po.out
   echo "The cscope database is generated"
+}
+
+json_escape () {
+    printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
 }
