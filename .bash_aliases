@@ -15,7 +15,9 @@ function glm() {
   git log --format=fuller --decorate --color
 }
 function gpd() {
-  git push --dry-run origin $1
+  out=$(git push --dry-run --porcelain origin $1)
+  sha=$(echo $out | cut -d ' ' -f 4)
+  git show $sha
 }
 function gp() {
   git push origin $1
