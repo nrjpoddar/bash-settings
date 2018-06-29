@@ -116,4 +116,16 @@ if ! shopt -oq posix; then
   fi
 fi
 
+if [ -x "$(command -v brew)" ] && [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
+if [ -x "$(command -v direnv)" ]; then
+  eval "$(direnv hook bash)"
+fi
+
+if [ -f "/usr/local/bin/virtualenvwrapper.sh" ]; then
+ source "/usr/local/bin/virtualenvwrapper.sh"
+fi
+
 export CLICOLOR=1
