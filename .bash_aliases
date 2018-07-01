@@ -1,5 +1,4 @@
 alias lsa="ls -alrt"
-alias vim="/usr/local/bin/vim"
 alias vi="vim -O"
 alias grep="grep --exclude-dir=\.git --color=always"
 alias jq="jq -C"
