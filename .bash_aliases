@@ -2,6 +2,8 @@ alias lsa="ls -alrt"
 alias vi="vim -O"
 alias grep="grep --exclude-dir=\.git --color=always"
 alias jq="jq -C"
+alias k="kubectl"
+alias kg="kubectl get"
 
 if [ -f /usr/lib/git-core/git-sh-prompt ]; then
   source /usr/lib/git-core/git-sh-prompt
@@ -17,6 +19,11 @@ function gpd() {
   out=$(git push --dry-run --porcelain origin $1)
   sha=$(echo $out | cut -d ' ' -f 4)
   git show $sha
+}
+function gcm() {
+  git checkout master
+  git fetch upstream
+  git rebase upstream/master
 }
 function gp() {
   git push origin $1
@@ -72,11 +79,37 @@ function kube-svc-port() {
 }
 
 function kube-port-forward() {
-  kubectl -n $1 port-forward $(kubectl -n $1 get pod -l $2 -o jsonpath='{.items[0].metadata.name}') $3:$3 2>&1 > /dev/null &
+  kubectl -n $1 port-forward $(kubectl -n $1 get pod -l $2 -o jsonpath='{.items[0].metadata.name}') $3:$4 2>&1 > /dev/null
 }
 
 function kube-pod-name() {
   kubectl -n $1 get pods -o custom-columns=:metadata.name --no-headers=true
+}
+
+function kube-not-running() {
+  kubectl get pods --all-namespaces --no-headers \
+    | grep -v "Running"
+}
+
+function kube-del-stalled() {
+  kubectl get pods --all-namespaces --no-headers \
+    | grep -v "Running" \
+    | awk '{print $1 " " $2}' \
+    | xargs -n2 kubectl delete --grace-period=0 --force pod -n
+}
+
+function kube-del-loop() {
+  for i in $(seq $1 $2); do kubectl delete ns $3-$i; done
+}
+
+function kube-sort-age() {
+  kubectl -n $1 get pods --sort-by=.status.startTime
+}
+
+function helm-del-purge() {
+  helm ls | grep -E $1 \
+    | awk '{print $1}' \
+    | xargs -n1 helm delete --purge
 }
 
 function ku() {
@@ -85,6 +118,11 @@ function ku() {
 
 function kuy() {
   kops update cluster --create-kube-config=false --yes
+}
+
+function updateImageTag() {
+  find $1 -name *.yaml | xargs sed -i.bak -e "s/$2/$3/g"
+  find $1 -name *.yaml.bak | xargs rm
 }
 
 _direnv_prompt () {
@@ -116,4 +154,9 @@ function cscope_build() {
 
 json_escape () {
     printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
+}
+
+function urlencode() {
+  echo "$1" | jq -sRr @uri
+  echo "Trim the trailing %0A"
 }
