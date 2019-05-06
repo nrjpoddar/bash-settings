@@ -4,6 +4,7 @@ alias grep="grep --exclude-dir=\.git --color=always"
 alias jq="jq -C"
 alias k="kubectl"
 alias kg="kubectl get"
+alias dre="docker run -ti --rm --entrypoint /bin/sh"
 
 if [ -f /usr/lib/git-core/git-sh-prompt ]; then
   source /usr/lib/git-core/git-sh-prompt
