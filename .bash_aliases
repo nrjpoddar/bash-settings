@@ -64,6 +64,11 @@ function gca() {
   git commit --amend --reset-author -c $1
 }
 
+function gcpr() {
+  git fetch $1 pull/$2/head:pr-$2
+  git checkout pr-$2
+}
+
 function cdc() {
   docker images -f "dangling=true" -q | xargs docker rmi -f
   docker rm -v $(docker ps -a -q -f status=exited)
@@ -111,6 +116,12 @@ function helm-del-purge() {
   helm ls | grep -E $1 \
     | awk '{print $1}' \
     | xargs -n1 helm delete --purge
+}
+
+function kube-del-resources() {
+  kubectl get $1 --no-headers \
+    | awk '{print $1}' \
+    | xargs -n1 kubectl delete $1
 }
 
 function ku() {
