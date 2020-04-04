@@ -137,6 +137,19 @@ function updateImageTag() {
   find $1 -name *.yaml.bak | xargs rm
 }
 
+# Istio aliases
+function istio-listener() {
+  istioctl pc listeners $1 --address $2 --port $3 -o json
+}
+
+function istio-route() {
+  istioctl pc routes $1 --name $2 -o json
+}
+
+function istio-cluster() {
+  istioctl pc clusters $1 --fqdn $2 -o json
+}
+
 _direnv_prompt () {
   if [[ "$PROMPT_NAME" != "" ]]; then
     printf "(%s)" "${PROMPT_NAME}"
