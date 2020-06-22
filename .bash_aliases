@@ -124,6 +124,13 @@ function kube-del-resources() {
     | xargs -n1 kubectl delete $1
 }
 
+function fetchIstioCert() {
+  kubectl get secrets -n $1 $2 -o json | \
+    jq -r '.data["ca-cert.pem"]' | \
+    base64 -D | \
+    openssl x509 -text -noout
+}
+
 function ku() {
   kops update cluster --create-kube-config=false
 }
