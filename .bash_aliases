@@ -5,6 +5,7 @@ alias jq="jq -C"
 alias k="kubectl"
 alias kg="kubectl get"
 alias dre="docker run -ti --rm --entrypoint /bin/sh"
+alias diff="colordiff -u"
 
 if [ -f /usr/lib/git-core/git-sh-prompt ]; then
   source /usr/lib/git-core/git-sh-prompt
@@ -124,9 +125,26 @@ function kube-del-resources() {
     | xargs -n1 kubectl delete $1
 }
 
+function kube-check-images() {
+  kubectl get pods -n $1 -o \
+    jsonpath='{.items[*].spec.containers[*].image}' | xargs -n1 | \
+    grep -v $2
+
+  kubectl get pods -n $1 -o \
+    jsonpath='{.items[*].spec.initContainers[*].image}' | xargs -n1 | \
+    grep -v $2
+}
+
 function fetchIstioCert() {
   kubectl get secrets -n $1 $2 -o json | \
     jq -r '.data["ca-cert.pem"]' | \
+    base64 -D | \
+    openssl x509 -text -noout
+}
+
+function fetchIstioCertChain() {
+  kubectl get secrets -n $1 $2 -o json | \
+    jq -r '.data["cert-chain.pem"]' | \
     base64 -D | \
     openssl x509 -text -noout
 }
@@ -191,4 +209,8 @@ json_escape () {
 function urlencode() {
   echo "$1" | jq -sRr @uri
   echo "Trim the trailing %0A"
+}
+
+function s3_download() {
+  AWS_PROFILE=$1 aws s3 cp s3://$2/$3 .
 }
