@@ -10,6 +10,7 @@ ln -s $HOME/bash-settings/.bashrc $HOME/.bashrc
 ln -s $HOME/bash-settings/.bash_profile $HOME/.bash_profile
 ```
 
+
 ### Setting up bash-completion & Git prompt in Mac OSX
 You need additional setup for getting the prompt working correctly in
 Mac OSX:
@@ -29,6 +30,24 @@ Mac OSX:
   ```
 * Close and restart the terminal, your prompt will include the Git branch if the
   current directory is a Git workspace.
+
+### Making bash your default shell
+In newer versions of MAC OS, zsh is the default shell instead of bash. You can
+use the following commands to switch to the latest version of bash as your
+default login shell.
+
+1. Install latest bash:
+   ```bash
+     brew install bash
+   ```
+1. Add newly bash to list of shells. Note that the MAC OS default bash is quite old.
+   ```bash
+     echo /usr/local/bin/bash | sudo tee -a /etc/shells
+   ```
+1. Switch to bash as default login
+   ```bash
+     chsh -s /usr/local/bin/bash
+   ```
 
 ### Setting up direnv in Mac OSX
 Install direnv using brew:
