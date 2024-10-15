@@ -11,6 +11,10 @@ if [ -f /usr/lib/git-core/git-sh-prompt ]; then
   source /usr/lib/git-core/git-sh-prompt
 fi
 
+if [ -f /opt/homebrew/etc/bash_completion.d/git-prompt.sh ]; then
+  source /opt/homebrew/etc/bash_completion.d/git-prompt.sh
+fi
+
 function gl() {
   git log --format=fuller --decorate --color --no-merges
 }

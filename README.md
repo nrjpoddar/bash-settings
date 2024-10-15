@@ -42,11 +42,11 @@ default login shell.
    ```
 1. Add newly bash to list of shells. Note that the MAC OS default bash is quite old.
    ```bash
-     echo /usr/local/bin/bash | sudo tee -a /etc/shells
+     echo /opt/homebrew/bin/bash | sudo tee -a /etc/shells
    ```
 1. Switch to bash as default login
    ```bash
-     chsh -s /usr/local/bin/bash
+     chsh -s /opt/homebrew/bin/bash
    ```
 
 ### Setting up direnv in Mac OSX
