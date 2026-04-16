@@ -17,9 +17,15 @@ Mac OSX:
 
 * Install brew:
   ```bash
-    /usr/bin/ruby -e "$(curl -fsSL \
-      https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   ```
+
+* Post brew install add brew to your $PATH for bash as the instructions will default to zsh:
+  ```bash
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.bash_profile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  ```
+
 * Install bash-completion
   ```bash
     brew install bash-completion
@@ -59,13 +65,13 @@ direnv.
 
 ### Setting up SSH keys for Github/Gitlab
 ```bash
-ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+  ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
 
 Add the key to SSH agent in ~/.bash_profile
 ```bash
-if [ -f $HOME/.ssh/<github/gitlab_private_key ] &&
- ! ssh-add -l | grep -q $HOME/.ssh/<github/gitlab_private_key; then
-  ssh-add $HOME/.ssh/<github/gitlab_private_key
+if [ -f $HOME/.ssh/<github/gitlab_private_key> ] &&
+ ! ssh-add -l | grep -q $HOME/.ssh/<github/gitlab_private_key>; then
+  ssh-add $HOME/.ssh/<github/gitlab_private_key>
 fi
 ```
